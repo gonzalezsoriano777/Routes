@@ -1,5 +1,5 @@
 {
-  "name": "mongo_express",
+   "name": "mongo_express",
   "version": "1.0.0",
   "description": "playing with mongo and express",
   "main": "server.js",
