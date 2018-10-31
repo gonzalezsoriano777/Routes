@@ -1,5 +1,5 @@
 {
-   "name": "mongo_express",
+  "name": "mongo_express",
   "version": "1.0.0",
   "description": "playing with mongo and express",
   "main": "server.js",
@@ -12,7 +12,7 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "mongoose": "^5.3.7"
+    "mongoose": "^5.3.8"
   },
   "devDependencies": {
     "nodemon": "^1.18.5"
