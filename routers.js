@@ -2,6 +2,7 @@ const express = require('express');
 const profile = require('./routing-prac/profile')
 const router = express.Router();
 
+
 router.get('/', (req, res) => {
      profile.find()
     .then(router => {
@@ -36,4 +37,37 @@ router.get('/:name', (req, res) => {
     .catch(err => res.status(500).json({message: err}));
 })
 
+// Creates a profile with a First Last Name and a Bio (AboutMe)
+router.post('/user', (req, res) => {
+    const { FirstName, LastName, AboutMe } = req.body
+    
+    const newProfile = new profile ({
+        FirstName,
+        LastName,
+        AboutMe
+    })
+    newProfile.save()
+        .then(prof => res.status(201).json(prof))
+        .catch(err => {
+            res.status(500).json({message: err});
+        });
+})
 
+router.put('/')
+
+router.delete('/:name', (req, res) => {
+    const { FirstName, LastName, AboutMe } = req.params;
+    profile.findOne({ AboutMe })
+    .then(prof => {
+       if(!prof) {
+           return res.status(404).json({message: `Profile: ${AboutMe} was not able to be found`});
+       } 
+       prof.remove()
+       .then(() => res.status(204).json({message: `Profile ${AboutMe} successfully deleted`}))
+       .catch(err => res.status(500).json({err}));
+    })
+    .catch(err => res.status(500).json({message: err}));
+});
+
+
+module.exports = router;

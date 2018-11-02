@@ -30,7 +30,7 @@ router.get('/:name', (req, res) => {
      .catch(err => res.status(500).json({message: err}));
 })
 
-router.post('/', (req, res) => {
+router.post('/user', (req, res) => {
     const { name, password, avatar } = req.body;
     
     const newUser = new User({
@@ -68,6 +68,6 @@ router.put('/:name', (req, res) => {
     //  .then(user) => {
      //     findOneAndUpdate()
       
-})
+});
 
 module.exports = router;
