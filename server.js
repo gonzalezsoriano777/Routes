@@ -14,8 +14,10 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json())
 
 const users = require('./routes/api/users');
+const profiles = require('./routes/api/profile');
 
 app.use('/api/users', users);
+app.use('/api/profile', profiles);
 
 app.get('/', (req, res) => res.send('Hello'))
 

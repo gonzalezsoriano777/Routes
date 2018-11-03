@@ -1,6 +1,10 @@
 const express = require('express');
-const profile = require('./routing-prac/profile')
+const profile = require('./routes/api/profile');
 const router = express.Router();
+
+var bodyParser = require('body-parser');
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({extended: true}))
 
 
 router.get('/', (req, res) => {
@@ -53,8 +57,22 @@ router.post('/user', (req, res) => {
         });
 })
 
-router.put('/')
+// Updates profile
+router.put('/:name', (req, res) => {
+    profile.findOneAndUpdate({FirstName: req.params.name},
+    {$set: {Email: req.body.Email}}, {new: true})
+    .then(prof =>{
+        if(!prof) {
+            res.status(404).json(`There is no profile for ${req.params.name} to actually update`)
+        }else {
+            res.json(prof);
+        }
+       
+    })
+    .catch(err => res.status(500).json({message: err}))
+})
 
+// Deletes profile AboutMe
 router.delete('/:name', (req, res) => {
     const { FirstName, LastName, AboutMe } = req.params;
     profile.findOne({ AboutMe })
