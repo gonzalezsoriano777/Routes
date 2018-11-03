@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const db = require('./config/keys').mongoURI;
 
 mongoose
-    .connect(db)
+    .connect(db, { useNewUrlParser: true, useCreateIndex: true, })
     .then(() => console.log("MongoDB Connected"))
     .catch(err => console.log(err))
     
@@ -14,10 +14,10 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json())
 
 const users = require('./routes/api/users');
-const profiles = require('./routes/api/profile');
+const profiles = require('./routes/api/routers');
 
 app.use('/api/users', users);
-app.use('/api/profile', profiles);
+app.use('/api/routers', profiles);
 
 app.get('/', (req, res) => res.send('Hello'))
 
