@@ -1,14 +1,14 @@
 const express = require('express');
-const profile = require('../../models/Profile');
+const Profile = require('../../models/Profile');
 const router = express.Router();
 
 var bodyParser = require('body-parser');
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended: true}))
 
-
+// Finds all the profiles created
 router.get('/', (req, res) => {
-     profile.find()
+     Profile.find()
         .then(router => {
         res.json(router)
     })
@@ -16,9 +16,9 @@ router.get('/', (req, res) => {
 })
 
 // Finds one Profile
-router.get('/first/:name', (req, res) => {
+router.get('/first/:name', (req, res) => { // Success
     const FirstName = req.params.name
-    profile.findOne({ FirstName })
+    Profile.findOne({ FirstName })
     .then(router => {
         if(!router) {
             return res.status(404).json({message: `Profile: ${FirstName} was not found!`});
@@ -28,24 +28,12 @@ router.get('/first/:name', (req, res) => {
     .catch(err => res.status(500).json({message: err}));
 });
 
-// Finds all Profiles for First and Last Name
-router.get('/:name', (req, res) => {
-    const { FirstName, LastName } = req.params
-    profile.find({ FirstName, LastName })
-    .then(router => {
-        if(!router) {
-            return res.status(404).json({message: `Profiles: ${FirstName, LastName} of all profiles could not be found!`});
-            }
-            res.json(router);
-    })
-    .catch(err => res.status(500).json({message: err}));
-})
 
 // Creates a profile with a First Last Name and a Bio (AboutMe)
-router.post('/user', (req, res) => {
+router.post('/user', (req, res) => { // Success
     const { FirstName, LastName, AboutMe, Age } = req.body
     
-    const newProfile = new profile ({
+    const newProfile = new Profile ({
         FirstName,
         LastName,
         AboutMe,
@@ -59,30 +47,37 @@ router.post('/user', (req, res) => {
 })
 
 // Updates profile
-router.put('/:email', (req, res) => {
-    profile.findOneAndUpdate({FirstName: req.params.name},
-    {$set: {Email: req.body.Email}}, {new: true}) // $set , this is used in MONGO
-    .then(router =>{
+router.put('/:FirstName', (req, res) => { // 
+    const FirstName = req.params.name;
+    const { LastName, AboutMe, Age} = req.body
+    
+    Profile.findOne({ FirstName })
+    .then(router => {
         if(!router) {
-            res.status(404).json(`There is no profile for ${req.params.name} to actually update`)
-        }else {
-            res.json(router);
+            res.status(404).json(`Profile: ${FirstName} was not found, cannot update..`)
+        } else {
+            Profile.findOneAndUpdate(
+                { FirstName },
+                {$set: { LastName, AboutMe, Age}},
+                {new : true},
+                ).then(updatedProfile => res.json(updatedProfile))
         }
-       
+        
+    
     })
-    .catch(err => res.status(500).json({message: err}))
+
 })
 
 // Deletes profile AboutMe
-router.delete('/:name', (req, res) => {
-    const { FirstName, LastName, AboutMe } = req.params;
-    profile.findOne({ AboutMe })
+router.delete('/del/:LastName', (req, res) => { // Success
+    const { FirstName, LastName, AboutMe, Age } = req.params;
+    Profile.findOne({ LastName })
     .then(router => {
        if(!router) {
-           return res.status(404).json({message: `Profile: ${AboutMe} was not able to be found`});
+           return res.status(404).json({message: `Profile: ${LastName} was not able to be found`});
        } 
        router.remove()
-       .then(() => res.status(204).json({message: `Profile ${AboutMe} successfully deleted`})) // 204 meanns no data added to the json
+       .then(() => res.status(204).json({message: `Profile ${LastName} successfully deleted`})) // 204 meanns no data added to the json
        .catch(err => res.status(500).json({err}));
     })
     .catch(err => res.status(500).json({message: err}));
